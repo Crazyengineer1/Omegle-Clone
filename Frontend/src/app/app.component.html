@@ -8,7 +8,16 @@
 </head>
 
 <body>
-  <h1>Hello World!</h1>
+  <div>
+    <video #localVideo autoplay playsinline muted class="h-64 w-64 border-2 border-green-500"></video>
+    <video #remoteVideo autoplay playsinline muted class="h-64 w-64 border-2 border-black"></video>
+  </div>
+  <div>
+    <button (click)="startCall()" [disabled]="isCallStarted"
+      class="border-2 border-black hover:cursor-pointer mr-1 disabled:cursor-default disabled:bg-gray-400 disabled:text-white">Start
+      call</button>
+    <button (click)="cutCall()" class="border-2 border-black hover:cursor-pointer">Cut call</button>
+  </div>
 </body>
 
 </html>

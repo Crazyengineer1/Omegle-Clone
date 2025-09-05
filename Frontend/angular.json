@@ -21,6 +21,7 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -57,6 +58,12 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "port": 4500,
+            "ssl": true,
+            "sslCert": "../Backend/certificates/localhost+2.pem",
+            "sslKey": "../Backend/certificates/localhost+2-key.pem"
+          },
           "configurations": {
             "production": {
               "buildTarget": "Frontend:build:production"
