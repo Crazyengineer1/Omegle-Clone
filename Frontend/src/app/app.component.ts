@@ -10,7 +10,7 @@ export class AppComponent {
   @ViewChild('localVideo') localVideoRef!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideoRef!: ElementRef<HTMLVideoElement>;
 
-  private socket = io('https://172.28.52.222:4000');
+  private socket = io('http://localhost:4000');
   private peer = new RTCPeerConnection({
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
   });
@@ -18,6 +18,7 @@ export class AppComponent {
 
   private pendingCandidates: RTCIceCandidateInit[] = [];
   private isCaller = false;
+  private localStream: MediaStream | null = null;
 
   isCallStarted = false;
 
@@ -31,17 +32,41 @@ export class AppComponent {
     this.socket.emit("start-call");
   }
 
-  cutCall() {
-    this.peer.close();
+  async cutCall() {
+    if (this.currentPeerId) {
+      console.log("Call ended");
+      this.socket.emit("end-call", { to: this.currentPeerId });
+    }
+
+    if (this.peer) {
+      this.peer.getSenders().forEach(sender => sender.track?.stop());
+      this.peer.close();
+    }
+
+    if (this.localStream) {
+      this.localStream.getTracks().forEach(track => track.stop());
+      this.localStream = null;
+    }
+
+    this.localVideoRef.nativeElement.srcObject = null;
+    this.remoteVideoRef.nativeElement.srcObject = null;
+
+    this.currentPeerId = null;
+    this.isCallStarted = false;
+
     this.peer = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
     this.listenToPeerEvents();
-    this.isCallStarted = false;
+  }
+
+  skipCall() {
+    this.cutCall();
+    this.startCall();
   }
 
   private async getLocalStream() {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-    this.displayLocalStream(stream);
-    this.addTracksToPeer(stream);
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    this.displayLocalStream(this.localStream);
+    this.addTracksToPeer(this.localStream);
   }
 
   private listenToSocketEvents() {
@@ -101,6 +126,29 @@ export class AppComponent {
       } catch (err) {
         console.error("Error adding received ice candidate", err);
       }
+    });
+
+    this.socket.on("call-ended", async ({ from }) => {
+      console.log("Call ended by peer:", from);
+
+      if (this.peer) {
+        this.peer.getSenders().forEach(sender => sender.track?.stop());
+        this.peer.close();
+      }
+
+      if (this.localStream) {
+        this.localStream.getTracks().forEach(track => track.stop());
+        this.localStream = null;
+      }
+
+      this.localVideoRef.nativeElement.srcObject = null;
+      this.remoteVideoRef.nativeElement.srcObject = null;
+
+      this.currentPeerId = null;
+      this.isCallStarted = false;
+
+      this.peer = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      this.listenToPeerEvents();
     });
   }
 

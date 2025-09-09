@@ -1,5 +1,6 @@
 import express from "express";
 import https from "https";
+import http from "http";
 import fs from "fs";
 import { Server, Socket } from "socket.io";
 import cors from "cors";
@@ -8,13 +9,15 @@ const port = 4000;
 const app = express();
 app.use(cors());
 
-const privateKey = fs.readFileSync("./certificates/localhost+2-key.pem", "utf8");
-const certificate = fs.readFileSync("./certificates/localhost+2.pem", "utf8");
+// const privateKey = fs.readFileSync("./certificates/localhost+2-key.pem", "utf8");
+// const certificate = fs.readFileSync("./certificates/localhost+2.pem", "utf8");
 
 
-const server = https.createServer(
-    { key: privateKey, cert: certificate },
-    app);
+// const server = https.createServer(
+//     { key: privateKey, cert: certificate },
+//     app);
+
+const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
@@ -55,6 +58,10 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("ice-candidate", ({ candidate, to }) => {
         io.to(to).emit("ice-candidate", { candidate, from: socket.id });
+    });
+
+    socket.on("end-call", ({ to }) => {
+        io.to(to).emit("call-ended", { from: socket.id });
     });
 
     socket.on("disconnect", () => {
