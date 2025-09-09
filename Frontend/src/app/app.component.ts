@@ -43,6 +43,10 @@ export class AppComponent {
       this.peer.close();
     }
 
+    if (!this.currentPeerId) {
+      this.socket.emit("early-cut");
+    }
+
     if (this.localStream) {
       this.localStream.getTracks().forEach(track => track.stop());
       this.localStream = null;

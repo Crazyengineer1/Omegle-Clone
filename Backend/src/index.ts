@@ -27,26 +27,36 @@ const io = new Server(server, {
     }
 });
 
-let waitingSocket: Socket | null = null;
+// let waitingSocket: Socket | null = null;
+let waitingQueue: Socket[] = [];
 
 io.on("connection", (socket: Socket) => {
     console.log("Client connected", socket.id);
 
     socket.on("start-call", () => {
-        if (waitingSocket?.id === socket.id) {
-            console.log("User tried to match with themselves—ignoring.");
-            return;
-        }
-        if (!waitingSocket) {
-            waitingSocket = socket;
+        if (waitingQueue.length == 0) {
+            waitingQueue.push(socket);
             socket.emit("waiting");
-        } else {
-            // Match found
-            socket.emit("matched", { peerId: waitingSocket.id });
-            waitingSocket.emit("matched", { peerId: socket.id });
-            waitingSocket = null;
+        }
+        else {
+            waitingQueue.push(socket);
+            const s1 = waitingQueue.shift();
+            const s2 = waitingQueue.shift();
+            if (s1 && s2) {
+                s1.emit("matched", { peerId: s2.id });
+                s2.emit("matched", { peerId: s1.id });
+            } else {
+                console.error("Error matchmaking");
+            }
         }
     });
+
+    socket.on("early-cut", () => {
+        const index = waitingQueue.indexOf(socket);
+        if (index != -1) {
+            waitingQueue.splice(index, 1);
+        }
+    })
 
     socket.on("offer", ({ offer, to }) => {
         io.to(to).emit("offer", { offer, from: socket.id });
@@ -66,9 +76,6 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("disconnect", () => {
         console.log("Client disconnected", socket.id);
-        if (waitingSocket?.id === socket.id) {
-            waitingSocket = null;
-        }
     });
 });
 
