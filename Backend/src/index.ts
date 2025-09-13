@@ -39,15 +39,13 @@ io.on("connection", (socket: Socket) => {
             socket.emit("waiting");
         }
         else {
-            waitingQueue.push(socket);
             const s1 = waitingQueue.shift();
-            const s2 = waitingQueue.shift();
-            if (s1 && s2) {
-                s1.emit("matched", { peerId: s2.id });
-                s2.emit("matched", { peerId: s1.id });
+            if (s1) {
+                socket.emit("matched", { peerId: s1.id, role: "caller" });
+                s1.emit("matched", { peerId: socket.id, role: "calle" });
 
-                activePairs.set(s1.id, s2.id);
-                activePairs.set(s2.id, s1.id);
+                activePairs.set(s1.id, socket.id);
+                activePairs.set(socket.id, s1.id);
             } else {
                 console.error("Error matchmaking");
             }

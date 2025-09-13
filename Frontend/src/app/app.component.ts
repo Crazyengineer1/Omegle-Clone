@@ -28,6 +28,9 @@ export class AppComponent {
   }
 
   async startCall() {
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    this.displayLocalStream(this.localStream);
+    this.addTracksToPeer(this.localStream);
     this.isCallStarted = true;
     this.socket.emit("start-call");
   }
@@ -67,24 +70,16 @@ export class AppComponent {
     this.startCall();
   }
 
-  private async getLocalStream() {
-    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-    this.displayLocalStream(this.localStream);
-    this.addTracksToPeer(this.localStream);
-  }
-
   private listenToSocketEvents() {
     this.socket.on("waiting", () => {
       console.log("Waiting for another user...");
     });
 
-    this.socket.on("matched", async ({ peerId }) => {
+    this.socket.on("matched", async ({ peerId, role }) => {
       console.log("Matched with", peerId);
-      await this.getLocalStream();
       this.currentPeerId = peerId;
 
-      const iAmCaller = (this.socket.id ?? "") < peerId;
-      if (iAmCaller) {
+      if (role === "caller") {
         const offer = await this.peer.createOffer();
         await this.peer.setLocalDescription(offer);
         this.socket.emit("offer", { offer, to: peerId });
@@ -92,7 +87,6 @@ export class AppComponent {
     });
 
     this.socket.on("offer", async ({ offer, from }) => {
-      await this.getLocalStream();
       if (this.peer.signalingState !== "stable") {
         console.warn("Skipping offer, wrong state", this.peer.signalingState);
         return;
