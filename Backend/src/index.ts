@@ -74,6 +74,12 @@ io.on("connection", (socket: Socket) => {
     });
 
     socket.on("end-call", ({ to }) => {
+        const peerID = activePairs.get(socket.id);
+        if (peerID) {
+            io.to(peerID).emit("call-ended", { from: socket.id });
+            activePairs.delete(socket.id);
+            activePairs.delete(peerID);
+        }
         io.to(to).emit("call-ended", { from: socket.id });
     });
 

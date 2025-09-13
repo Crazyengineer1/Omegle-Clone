@@ -14,12 +14,12 @@
   </div>
   <div class="flex mt-[7vh] justify-evenly px-4">
     <button (click)="startCall()" [disabled]="isCallStarted"
-      class="bg-green-400 rounded-md h-14 px-7.5 hover:cursor-pointer hover:shadow-[0_0_0.6em_0.1em_rgba(0,255,0,1)] transition-all duration-200 active:scale-95 active:translate-y-1 disabled:cursor-default disabled:bg-green-900 disabled:text-gray-400">Start
+      class="bg-green-400 rounded-md h-14 px-7.5 hover:cursor-pointer hover:shadow-[0_0_0.6em_0.1em_rgba(0,255,0,1)] transition-all duration-200 active:scale-95 active:translate-y-1 disabled:active:animate-wiggle disabled:active:scale-100 disabled:active:translate-none disabled:cursor-default disabled:bg-green-900 disabled:text-gray-400 disabled:shadow-none">Start
       call</button>
-    <button (click)="skipCall()"
-      class="bg-amber-500 rounded-md h-14 px-7.5 hover:cursor-pointer hover:shadow-[0_0_0.6em_0.1em_rgba(245,158,11,1)] transition-all duration-200 active:scale-95 active:translate-y-1">Skip</button>
-    <button (click)="cutCall()"
-      class="bg-red-500 rounded-md h-14 px-7.5 hover:cursor-pointer hover:shadow-[0_0_0.6em_0.1em_rgba(255,0,0,1)] transition-all duration-200 active:scale-95 active:translate-y-1">Cut
+    <button (click)="skipCall()" [disabled]="!currentPeerId"
+      class="bg-amber-500 rounded-md h-14 px-7.5 hover:cursor-pointer hover:shadow-[0_0_0.6em_0.1em_rgba(245,158,11,1)] transition-all duration-200 active:scale-95 active:translate-y-1 disabled:active:animate-wiggle disabled:active:scale-100 disabled:active:translate-none disabled:bg-amber-950 disabled:cursor-default disabled:text-gray-400 disabled:shadow-none">Skip</button>
+    <button (click)="cutCall()" [disabled]="!isCallStarted"
+      class="bg-red-500 rounded-md h-14 px-7.5 hover:cursor-pointer hover:shadow-[0_0_0.6em_0.1em_rgba(255,0,0,1)] transition-all duration-200 active:scale-95 active:translate-y-1 disabled:active:animate-wiggle disabled:active:translate-none disabled:active:scale-100 disabled:bg-red-950 disabled:cursor-default disabled:text-gray-400 disabled:shadow-none">Cut
       call</button>
   </div>
 </body>

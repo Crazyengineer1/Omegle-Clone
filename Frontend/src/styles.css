@@ -1,2 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@theme {
+
+    --animate-wiggle: wiggle 0.4s;
+
+    @keyframes wiggle {
+        0% {
+            transform: translateX(0);
+        }
+
+        20% {
+            transform: translateX(-0.4em);
+        }
+
+        40% {
+            transform: translateX(0.4em);
+        }
+
+        60% {
+            transform: translateX(-0.4em);
+        }
+
+        80% {
+            transform: translateX(0.4em);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+}
