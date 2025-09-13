@@ -21,14 +21,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        // origin: ["http://localhost:4500", "http://192.168.129.222:4500"],
+        // origin: ["http://localhost:4500", "http://192.168.000.000:4500"],
         origin: "*",
         methods: ["GET", "POST"]
     }
 });
 
-// let waitingSocket: Socket | null = null;
 let waitingQueue: Socket[] = [];
+const activePairs = new Map<string, string>();
 
 io.on("connection", (socket: Socket) => {
     console.log("Client connected", socket.id);
@@ -45,6 +45,9 @@ io.on("connection", (socket: Socket) => {
             if (s1 && s2) {
                 s1.emit("matched", { peerId: s2.id });
                 s2.emit("matched", { peerId: s1.id });
+
+                activePairs.set(s1.id, s2.id);
+                activePairs.set(s2.id, s1.id);
             } else {
                 console.error("Error matchmaking");
             }
@@ -76,6 +79,17 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("disconnect", () => {
         console.log("Client disconnected", socket.id);
+        const index = waitingQueue.indexOf(socket);
+        if (index != -1) {
+            waitingQueue.splice(index, 1);
+        }
+        const peerID = activePairs.get(socket.id);
+        if (peerID) {
+            io.to(peerID).emit("call-ended", { from: socket.id });
+            activePairs.delete(socket.id);
+            activePairs.delete(peerID);
+        }
+
     });
 });
 
