@@ -30,7 +30,7 @@ export class AppComponent {
   }
 
   async startCall() {
-    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     this.displayLocalStream(this.localStream);
     this.addTracksToPeer(this.localStream);
     this.isCallStarted = true;
@@ -171,6 +171,7 @@ export class AppComponent {
 
   private displayLocalStream(stream: MediaStream) {
     this.localVideoRef.nativeElement.srcObject = stream;
+    this.localVideoRef.nativeElement.muted = true;
   }
 
   private addTracksToPeer(stream: MediaStream) {
