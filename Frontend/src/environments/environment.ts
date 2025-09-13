@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    backendUrl: 'http://localhost:4000'
+    backendUrl: 'https://omegle-clone-rust-eight.vercel.app/'
 };
