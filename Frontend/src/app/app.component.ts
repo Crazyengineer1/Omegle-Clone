@@ -1,9 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { io } from 'socket.io-client';
+import { FooterComponent } from './footer/footer.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  imports: [FooterComponent],
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
@@ -158,7 +160,7 @@ export class AppComponent {
 
     this.peer.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log(event.candidate);
+        // console.log(event.candidate);
         this.socket.emit("ice-candidate", {
           candidate: event.candidate,
           to: this.currentPeerId
