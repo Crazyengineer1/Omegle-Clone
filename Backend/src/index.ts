@@ -4,8 +4,9 @@ import http from "http";
 import fs from "fs";
 import { Server, Socket } from "socket.io";
 import cors from "cors";
+require('dotenv').config();
 
-const port = 4000;
+const port = process.env.PORT;
 const app = express();
 app.use(cors());
 
@@ -21,8 +22,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        // origin: ["http://localhost:4500", "http://192.168.000.000:4500"],
-        origin: "*",
+        origin: process.env.FRONTEND_URL,
         methods: ["GET", "POST"]
     }
 });

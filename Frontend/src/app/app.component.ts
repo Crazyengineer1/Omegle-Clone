@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { io } from 'socket.io-client';
 import { FooterComponent } from './footer/footer.component';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ export class AppComponent {
   @ViewChild('localVideo') localVideoRef!: ElementRef<HTMLVideoElement>;
   @ViewChild('remoteVideo') remoteVideoRef!: ElementRef<HTMLVideoElement>;
 
-  private socket = io('http://localhost:4000');
+  private socket = io(environment.backendUrl);
   private peer = new RTCPeerConnection({
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
   });
