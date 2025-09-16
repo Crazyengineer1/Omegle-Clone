@@ -10,6 +10,11 @@ const port = process.env.PORT;
 const app = express();
 app.use(cors());
 
+app.get("/", (req, res) => {
+    res.send("✅ Backend server is running!");
+});
+
+
 // const privateKey = fs.readFileSync("./certificates/localhost+2-key.pem", "utf8");
 // const certificate = fs.readFileSync("./certificates/localhost+2.pem", "utf8");
 
