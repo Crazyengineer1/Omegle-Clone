@@ -39,6 +39,13 @@ io.on("connection", (socket: Socket) => {
     console.log("Client connected", socket.id);
 
     socket.on("start-call", () => {
+        const exist = waitingQueue.some(s => s.id === socket.id);
+
+        if (exist) {
+            console.log("User tried to match with themselves");
+            return;
+        }
+
         if (waitingQueue.length == 0) {
             waitingQueue.push(socket);
             socket.emit("waiting");
