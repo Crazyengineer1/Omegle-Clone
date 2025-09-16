@@ -40,7 +40,7 @@ export class AppComponent {
 
   async cutCall() {
     if (this.currentPeerId) {
-      console.log("Call ended");
+      // console.log("Call ended");
       this.socket.emit("end-call", { to: this.currentPeerId });
     }
 
@@ -75,11 +75,11 @@ export class AppComponent {
 
   private listenToSocketEvents() {
     this.socket.on("waiting", () => {
-      console.log("Waiting for another user...");
+      // console.log("Waiting for another user...");
     });
 
     this.socket.on("matched", async ({ peerId, role }) => {
-      console.log("Matched with", peerId);
+      // console.log("Matched with", peerId);
       this.currentPeerId = peerId;
 
       if (role === "caller") {
@@ -119,7 +119,7 @@ export class AppComponent {
       try {
         if (!candidate) return;
         if (!this.peer.remoteDescription) {
-          console.log("Buffering ICE candidate until remote description is set");
+          // console.log("Buffering ICE candidate until remote description is set");
           this.pendingCandidates.push(candidate);
         } else {
           await this.peer.addIceCandidate(candidate);
@@ -130,7 +130,7 @@ export class AppComponent {
     });
 
     this.socket.on("call-ended", async ({ from }) => {
-      console.log("Call ended by peer:", from);
+      // console.log("Call ended by peer:", from);
 
       if (this.peer) {
         this.peer.getSenders().forEach(sender => sender.track?.stop());

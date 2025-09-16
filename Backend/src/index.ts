@@ -36,13 +36,13 @@ let waitingQueue: Socket[] = [];
 const activePairs = new Map<string, string>();
 
 io.on("connection", (socket: Socket) => {
-    console.log("Client connected", socket.id);
+    // console.log("Client connected", socket.id);
 
     socket.on("start-call", () => {
         const exist = waitingQueue.some(s => s.id === socket.id);
 
         if (exist) {
-            console.log("User tried to match with themselves");
+            alert("User tried to match with themselves");
             return;
         }
 
@@ -94,7 +94,7 @@ io.on("connection", (socket: Socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log("Client disconnected", socket.id);
+        // console.log("Client disconnected", socket.id);
         const index = waitingQueue.indexOf(socket);
         if (index != -1) {
             waitingQueue.splice(index, 1);
