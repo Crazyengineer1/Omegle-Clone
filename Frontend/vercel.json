@@ -1,3 +1,14 @@
 {
-    "outputDirectory": "dist/frontend"
+    "builds": [
+        {
+            "src": "dist/frontend/browser/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
+        }
+    ]
 }
