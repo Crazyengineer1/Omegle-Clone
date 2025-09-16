@@ -42,7 +42,6 @@ io.on("connection", (socket: Socket) => {
         const exist = waitingQueue.some(s => s.id === socket.id);
 
         if (exist) {
-            alert("User tried to match with themselves");
             return;
         }
 
