@@ -11,7 +11,9 @@ const app = express();
 app.use(cors());
 
 app.get("/", (req, res) => {
-    res.send("✅ Backend server is running!");
+    res.send(`
+        <h2>Welcome to <a href="https://github.com/Crazyengineer1/Omegle-Clone" target="_blank">Crazyengineer1's omegle-clone</a> backend</h2>
+        <p> If you are seeing this that means backend is working fine. Go to <a href="https://omegle-clone-brtt.vercel.app/" target="_blank">Frontend</a> to fully enjoy this project</p>`);
 });
 
 
