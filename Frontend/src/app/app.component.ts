@@ -135,6 +135,7 @@ export class AppComponent {
     });
 
     this.socket.on("call-ended", async ({ from }) => {
+      this.titleService.setTitle("Call ended");
       // console.log("Call ended by peer:", from);
 
       if (this.peer) {
