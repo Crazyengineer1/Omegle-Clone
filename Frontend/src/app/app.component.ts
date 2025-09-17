@@ -41,8 +41,8 @@ export class AppComponent {
   }
 
   async cutCall() {
+    this.titleService.setTitle("Call ended");
     if (this.currentPeerId) {
-      this.titleService.setTitle("Call ended");
       // console.log("Call ended");
       this.socket.emit("end-call", { to: this.currentPeerId });
     }
