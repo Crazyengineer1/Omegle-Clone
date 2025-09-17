@@ -26,13 +26,13 @@ export class AppComponent {
 
   isCallStarted = false;
 
-  constructor(private tilteService: Title) {
+  constructor(private titleService: Title) {
     this.listenToSocketEvents();
     this.listenToPeerEvents();
   }
 
   async startCall() {
-    this.tilteService.setTitle("Startting call");
+    this.titleService.setTitle("Starting call");
     this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     this.displayLocalStream(this.localStream);
     this.addTracksToPeer(this.localStream);
@@ -42,6 +42,7 @@ export class AppComponent {
 
   async cutCall() {
     if (this.currentPeerId) {
+      this.titleService.setTitle("Call ended");
       // console.log("Call ended");
       this.socket.emit("end-call", { to: this.currentPeerId });
     }
@@ -77,12 +78,12 @@ export class AppComponent {
 
   private listenToSocketEvents() {
     this.socket.on("waiting", () => {
-      this.tilteService.setTitle("Waiting for another user");
+      this.titleService.setTitle("Waiting for another user");
       // console.log("Waiting for another user...");
     });
 
     this.socket.on("matched", async ({ peerId, role }) => {
-      this.tilteService.setTitle("Ongoing call");
+      this.titleService.setTitle("Ongoing call");
       // console.log("Matched with", peerId);
       this.currentPeerId = peerId;
 
@@ -134,7 +135,6 @@ export class AppComponent {
     });
 
     this.socket.on("call-ended", async ({ from }) => {
-      this.tilteService.setTitle("Call ended");
       // console.log("Call ended by peer:", from);
 
       if (this.peer) {
