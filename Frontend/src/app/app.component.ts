@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { io } from 'socket.io-client';
 import { FooterComponent } from './footer/footer.component';
 import { environment } from '../environments/environment';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -25,12 +26,13 @@ export class AppComponent {
 
   isCallStarted = false;
 
-  constructor() {
+  constructor(private tilteService: Title) {
     this.listenToSocketEvents();
     this.listenToPeerEvents();
   }
 
   async startCall() {
+    this.tilteService.setTitle("Startting call");
     this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     this.displayLocalStream(this.localStream);
     this.addTracksToPeer(this.localStream);
@@ -75,10 +77,12 @@ export class AppComponent {
 
   private listenToSocketEvents() {
     this.socket.on("waiting", () => {
+      this.tilteService.setTitle("Waiting for another user");
       // console.log("Waiting for another user...");
     });
 
     this.socket.on("matched", async ({ peerId, role }) => {
+      this.tilteService.setTitle("Ongoing call");
       // console.log("Matched with", peerId);
       this.currentPeerId = peerId;
 
@@ -130,6 +134,7 @@ export class AppComponent {
     });
 
     this.socket.on("call-ended", async ({ from }) => {
+      this.tilteService.setTitle("Call ended");
       // console.log("Call ended by peer:", from);
 
       if (this.peer) {
@@ -181,5 +186,4 @@ export class AppComponent {
     });
   }
 
-  title = 'Frontend';
 }
