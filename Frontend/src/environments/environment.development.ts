@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    backendUrl: 'https://omegle-clone-zn3c.onrender.com'
+    backendUrl: 'http://3.109.210.112:4000'
 };
