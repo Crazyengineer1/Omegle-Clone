@@ -79,12 +79,12 @@ export class AppComponent {
   private listenToSocketEvents() {
     this.socket.on("waiting", () => {
       this.titleService.setTitle("Waiting for another user");
-      // console.log("Waiting for another user...");
+      console.log("Waiting for another user...");
     });
 
     this.socket.on("matched", async ({ peerId, role }) => {
       this.titleService.setTitle("Ongoing call");
-      // console.log("Matched with", peerId);
+      console.log("Matched with", peerId);
       this.currentPeerId = peerId;
 
       if (role === "caller") {
